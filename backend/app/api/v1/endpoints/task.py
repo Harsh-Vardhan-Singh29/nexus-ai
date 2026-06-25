@@ -9,7 +9,10 @@ from app.schemas.task import (
 )
 from app.services.task_service import TaskService
 
-router = APIRouter(prefix="/tasks", tags=["Tasks"])
+router = APIRouter(
+    prefix="/tasks",
+    tags=["Tasks"]
+)
 
 
 @router.post("/", response_model=TaskResponse)
@@ -25,3 +28,61 @@ def get_tasks(
     db: Session = Depends(get_db)
 ):
     return TaskService.get_tasks(db)
+
+
+@router.get("/{task_id}", response_model=TaskResponse)
+def get_task(
+    task_id: int,
+    db: Session = Depends(get_db)
+):
+    task = TaskService.get_task(db, task_id)
+
+    if not task:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
+
+    return task
+
+
+@router.put("/{task_id}", response_model=TaskResponse)
+def update_task(
+    task_id: int,
+    task: TaskUpdate,
+    db: Session = Depends(get_db)
+):
+    updated_task = TaskService.update_task(
+        db,
+        task_id,
+        task
+    )
+
+    if not updated_task:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
+
+    return updated_task
+
+
+@router.delete("/{task_id}")
+def delete_task(
+    task_id: int,
+    db: Session = Depends(get_db)
+):
+    deleted = TaskService.delete_task(
+        db,
+        task_id
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
+
+    return {
+        "message": "Task deleted successfully"
+    }
