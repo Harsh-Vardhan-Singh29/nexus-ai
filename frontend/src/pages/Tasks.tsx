@@ -1,13 +1,13 @@
-import { useState } from "react";
-
+import { useMemo, useState } from "react";
 import Modal from "../components/common/Modal";
 import TaskCard from "../components/tasks/TaskCard";
 import TaskForm from "../components/tasks/TaskForm";
 import TaskSkeleton from "../components/tasks/TaskSkeleton";
 import { useTasks } from "../hooks/useTasks";
+import { calculateTaskScore } from "../utils/taskScore";
 
 import type { Task, CreateTask } from "../types/task";
-
+import { useSearch } from "../context/SearchContext";
 export default function Tasks() {
     const {
         tasks,
@@ -21,6 +21,44 @@ export default function Tasks() {
 
     const [openModal, setOpenModal] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
+    const { query } = useSearch();
+    const totalTasks = tasks.length;
+
+    const completedTasks = tasks.filter(
+        (task) => task.status === "Completed"
+    ).length;
+
+    const pendingTasks = tasks.filter(
+        (task) => task.status === "Pending"
+    ).length;
+
+    const overdueTasks = tasks.filter((task) => {
+
+        if (!task.deadline || task.status === "Completed") {
+            return false;
+        }
+
+        return new Date(task.deadline) < new Date();
+
+    }).length;
+
+    const [filter, setFilter] = useState<
+        | "All"
+        | "Pending"
+        | "Completed"
+        | "High"
+        | "Medium"
+        | "Low"
+        | "Overdue"
+    >("All");
+
+    const [sortBy, setSortBy] = useState<
+        "Newest" |
+        "Oldest" |
+        "Priority" |
+        "Deadline" |
+        "AI Priority"
+    >("Newest");
 
     function openCreateModal() {
         setEditingTask(null);
@@ -56,7 +94,97 @@ export default function Tasks() {
 
         await deleteTask(id);
     }
+    const filteredTasks = useMemo(() => {
 
+        const result = tasks.filter((task) => {
+
+            const search = query.toLowerCase();
+
+            const matchesSearch =
+                task.title.toLowerCase().includes(search) ||
+                task.description.toLowerCase().includes(search);
+
+            let matchesFilter = true;
+
+            switch (filter) {
+
+                case "Pending":
+                    matchesFilter = task.status === "Pending";
+                    break;
+
+                case "Completed":
+                    matchesFilter = task.status === "Completed";
+                    break;
+
+                case "High":
+                case "Medium":
+                case "Low":
+                    matchesFilter = task.priority === filter;
+                    break;
+                case "Overdue":
+
+                    matchesFilter =
+                        task.status !== "Completed" &&
+                        !!task.deadline &&
+                        new Date(task.deadline) < new Date();
+
+                    break;
+            }
+
+            return matchesSearch && matchesFilter;
+
+        });
+
+        result.sort((a, b) => {
+
+            switch (sortBy) {
+
+                case "Newest":
+                    return b.id - a.id;
+
+                case "Oldest":
+                    return a.id - b.id;
+
+                case "Priority": {
+
+                    const priorityOrder = {
+                        High: 3,
+                        Medium: 2,
+                        Low: 1,
+                    };
+
+                    return (
+                        priorityOrder[
+                            b.priority as keyof typeof priorityOrder
+                        ] -
+                        priorityOrder[
+                            a.priority as keyof typeof priorityOrder
+                        ]
+                    );
+                }
+
+                case "Deadline":
+
+                    return (
+                        new Date(a.deadline ?? "9999-12-31").getTime() -
+                        new Date(b.deadline ?? "9999-12-31").getTime()
+                    );
+
+                case "AI Priority":
+
+                    return (
+                        calculateTaskScore(b) -
+                        calculateTaskScore(a)
+                    );
+                default:
+                    return 0;
+            }
+
+        });
+
+        return result;
+
+    }, [tasks, query, filter, sortBy]);
     if (loading) {
         return (
             <div className="grid gap-6 lg:grid-cols-2">
@@ -119,9 +247,93 @@ export default function Tasks() {
 
                 </div>
 
+                <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+
+                    <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-5">
+                        <p className="text-slate-400 text-sm">Total Tasks</p>
+                        <h2 className="mt-2 text-3xl font-bold text-white">
+                            {totalTasks}
+                        </h2>
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-5">
+                        <p className="text-slate-400 text-sm">Pending</p>
+                        <h2 className="mt-2 text-3xl font-bold text-orange-400">
+                            {pendingTasks}
+                        </h2>
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-5">
+                        <p className="text-slate-400 text-sm">Completed</p>
+                        <h2 className="mt-2 text-3xl font-bold text-green-400">
+                            {completedTasks}
+                        </h2>
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-5">
+                        <p className="text-slate-400 text-sm">Overdue</p>
+                        <h2 className="mt-2 text-3xl font-bold text-red-400">
+                            {overdueTasks}
+                        </h2>
+                    </div>
+
+                </div>
+
+                <div className="mb-8 flex flex-col gap-4 lg:flex-row">
+
+                    <select
+                        title="Filter Tasks"
+                        aria-label="Filter Tasks"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value as typeof filter)}
+                        className="
+                            rounded-2xl
+                            border
+                            border-slate-700
+                            bg-slate-900/70
+                            px-5
+                            py-3
+                            text-white
+                        "
+                    >
+                        <option>All</option>
+                        <option>Pending</option>
+                        <option>Completed</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                        <option>Overdue</option>
+                        <option>AI Priority</option>
+                    </select>
+
+                    <select
+                        title="Sort Tasks"
+                        aria-label="Sort Tasks"
+                        value={sortBy}
+                        onChange={(e) =>
+                            setSortBy(e.target.value as typeof sortBy)
+                        }
+                        className="
+                            rounded-2xl
+                            border
+                            border-slate-700
+                            bg-slate-900/70
+                            px-5
+                            py-3
+                            text-white
+                        "
+                    >
+                        <option>Newest</option>
+                        <option>Oldest</option>
+                        <option>Priority</option>
+                        <option>Deadline</option>
+                    </select>
+
+                </div>
+
                 {/* Empty State */}
 
-                {tasks.length === 0 ? (
+                {filteredTasks.length === 0 ? (
 
                     <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 py-20 text-center">
 
@@ -130,11 +342,15 @@ export default function Tasks() {
                         </div>
 
                         <h2 className="mt-6 text-2xl font-bold text-white">
-                            No Tasks Yet
+                            {tasks.length === 0
+                                ? "No Tasks Yet"
+                                : "No Matching Tasks"}
                         </h2>
 
                         <p className="mt-3 text-slate-400">
-                            Create your first task and let NEXUS AI help you stay productive.
+                            {tasks.length === 0
+                                ? "Create your first task and let NEXUS AI help you stay productive."
+                                : "Try changing your search or filter."}
                         </p>
 
                         <button
@@ -149,7 +365,7 @@ export default function Tasks() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                        {tasks.map((task) => (
+                        {filteredTasks.map((task) => (
 
                             <TaskCard
                                 key={task.id}

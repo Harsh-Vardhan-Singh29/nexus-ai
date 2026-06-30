@@ -1,8 +1,12 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-
+import { useReminder } from "../../hooks/useReminder";
+import { useNotifications } from "../../context/NotificationContext";
 export default function Layout() {
+    const { addNotification } = useNotifications();
+
+    useReminder(addNotification);
     return (
         <div className="flex h-screen overflow-hidden bg-slate-950 text-white">
 

@@ -4,9 +4,51 @@ import {
     FaFlag,
     FaCheckCircle,
 } from "react-icons/fa";
-
+import {
+    FaCalendarAlt,
+    FaClock,
+    FaExclamationTriangle,
+} from "react-icons/fa";
 import type { Task } from "../../types/task";
+function getDeadlineStatus(deadline?: string | null) {
+    if (!deadline) return null;
 
+    const today = new Date();
+    const due = new Date(deadline);
+
+    today.setHours(0, 0, 0, 0);
+    due.setHours(0, 0, 0, 0);
+
+    const diff =
+        (due.getTime() - today.getTime()) /
+        (1000 * 60 * 60 * 24);
+
+    if (diff < 0) {
+        return {
+            label: "Overdue",
+            color: "bg-red-500/20 text-red-400",
+        };
+    }
+
+    if (diff === 0) {
+        return {
+            label: "Today",
+            color: "bg-orange-500/20 text-orange-300",
+        };
+    }
+
+    if (diff === 1) {
+        return {
+            label: "Tomorrow",
+            color: "bg-yellow-500/20 text-yellow-300",
+        };
+    }
+
+    return {
+        label: new Date(deadline).toLocaleDateString(),
+        color: "bg-slate-700 text-slate-300",
+    };
+}
 interface Props {
     task: Task;
     onDelete: (id: number) => void;
@@ -18,6 +60,7 @@ export default function TaskCard({
     onDelete,
     onEdit,
 }: Props) {
+    const deadline = getDeadlineStatus(task.deadline);
     const priorityStyle = {
         High: "bg-red-500/20 text-red-400 border border-red-500/30",
         Medium: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
@@ -45,7 +88,8 @@ export default function TaskCard({
             duration-300
             hover:-translate-y-1
             hover:border-blue-500/50
-            hover:shadow-blue-500/10
+            hover:shadow-2xl
+            hover:shadow-cyan-500/10
         "
         >
             {/* Glow */}
@@ -104,7 +148,60 @@ export default function TaskCard({
                         {task.status}
                     </span>
 
+                    {deadline && (
+                        <span
+                            className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${deadline.color}`}
+                        >
+                            <FaCalendarAlt size={12} />
+                            {deadline.label}
+                        </span>
+                    )}
+
+                    {task.estimated_time && (
+                        <span
+                            className="
+                                flex
+                                items-center
+                                gap-2
+                                rounded-full
+                                bg-cyan-500/20
+                                border
+                                border-cyan-500/30
+                                px-4
+                                py-2
+                                text-sm
+                                font-medium
+                                text-cyan-300
+                            "
+                        >
+                            <FaClock size={12} />
+                            {task.estimated_time} mins
+                        </span>
+                    )}
+
                 </div>
+
+                {deadline?.label === "Overdue" && (
+                    <div
+                        className="
+                            mt-5
+                            flex
+                            items-center
+                            gap-2
+                            rounded-xl
+                            border
+                            border-red-500/30
+                            bg-red-500/10
+                            p-3
+                            text-sm
+                            font-medium
+                            text-red-400
+                        "
+                    >
+                        <FaExclamationTriangle />
+                        This task is overdue. Complete it as soon as possible.
+                    </div>
+                )}
 
                 {/* Buttons */}
 

@@ -8,13 +8,24 @@ import {
 interface HeroBannerProps {
     totalTasks: number;
     completedTasks: number;
+    pendingTasks: number;
+    overdueTasks: number;
+    nextTask?: string;
 }
-
+import { useNavigate } from "react-router-dom";
 export default function HeroBanner({
     totalTasks,
     completedTasks,
+    overdueTasks,
+    nextTask,
 }: HeroBannerProps) {
+    const navigate = useNavigate();
+    const user = JSON.parse(
+        localStorage.getItem("user") || "null"
+    );
 
+    const firstName =
+        user?.name?.split(" ")[0] || "Guest";
     const productivity =
         totalTasks === 0
             ? 0
@@ -54,23 +65,40 @@ export default function HeroBanner({
 
                 <div>
 
-                    <p className="text-sm uppercase tracking-[4px] text-cyan-400">
-                        NEXUS AI
+                    <p className="text-sm uppercase tracking-[2px] text-cyan-400">
+                        {user?.email || "NEXUS AI"}
                     </p>
 
                     <h1 className="mt-3 text-5xl font-bold text-white">
-                        {greeting}
+                        {greeting}, {firstName} 👋
                     </h1>
 
                     <p className="mt-4 max-w-xl text-lg leading-8 text-slate-300">
-                        Welcome back! Let's make today productive.
-                        Your AI assistant is ready to help you
-                        organize tasks, plan your schedule,
-                        and boost your productivity.
+                        Welcome back {firstName}! Your AI workspace is
+                        synchronized and ready. Let's complete today's
+                        tasks and boost your productivity.
+
+                        <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-slate-800/60 p-5">
+
+                            <p className="text-sm font-semibold text-cyan-400">
+                                🤖 AI Recommendation
+                            </p>
+
+                            <p className="mt-2 text-slate-300">
+                                {overdueTasks > 0
+                                    ? `You have ${overdueTasks} overdue task${overdueTasks > 1 ? "s" : ""}. Complete them first.`
+                                    : nextTask
+                                        ? `Start with "${nextTask}" today. It's your next important task.`
+                                        : "Great job! No urgent tasks today."}
+                            </p>
+
+                        </div>
                     </p>
+                    
 
                     <button
                         type="button"
+                        onClick={() => navigate("/tasks")}
                         className="
                             mt-8
                             flex

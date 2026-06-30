@@ -10,7 +10,6 @@ from app.schemas.task import (
 from app.services.task_service import TaskService
 
 router = APIRouter(
-    prefix="/tasks",
     tags=["Tasks"]
 )
 

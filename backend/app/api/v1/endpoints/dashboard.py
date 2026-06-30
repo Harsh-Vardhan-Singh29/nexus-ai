@@ -6,7 +6,6 @@ from app.schemas.dashboard import DashboardStats
 from app.services.task_service import TaskService
 
 router = APIRouter(
-    prefix="/dashboard",
     tags=["Dashboard"]
 )
 

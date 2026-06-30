@@ -1,43 +1,65 @@
 import { NavLink } from "react-router-dom";
+
 import {
     FaHome,
     FaTasks,
     FaCalendarAlt,
+    FaChartLine,
     FaRobot,
     FaCog,
     FaBolt,
 } from "react-icons/fa";
 
 const links = [
+
     {
         name: "Dashboard",
         path: "/",
         icon: <FaHome />,
     },
+
     {
         name: "Tasks",
         path: "/tasks",
         icon: <FaTasks />,
     },
+
     {
         name: "Planner",
         path: "/planner",
         icon: <FaCalendarAlt />,
     },
+
+    {
+        name: "Calendar",
+        path: "/calendar",
+        icon: <FaCalendarAlt />,
+    },
+    
+    {
+        name: "Analytics",
+        path: "/analytics",
+        icon: <FaChartLine />,
+    },
+
     {
         name: "AI Assistant",
         path: "/ai",
         icon: <FaRobot />,
     },
+
     {
         name: "Settings",
         path: "/settings",
         icon: <FaCog />,
     },
+
 ];
 
 export default function Sidebar() {
+
     return (
+
         <aside
             className="
                 flex
@@ -50,6 +72,7 @@ export default function Sidebar() {
                 text-white
             "
         >
+
             {/* Logo */}
 
             <div className="border-b border-slate-800 p-8">
@@ -72,7 +95,9 @@ export default function Sidebar() {
                             shadow-lg
                         "
                     >
+
                         <FaBolt />
+
                     </div>
 
                     <div>
@@ -119,11 +144,15 @@ export default function Sidebar() {
                         `
                         }
                     >
+
                         <span className="text-lg">
+
                             {item.icon}
+
                         </span>
 
                         {item.name}
+
                     </NavLink>
 
                 ))}
@@ -137,15 +166,21 @@ export default function Sidebar() {
                 <div className="rounded-xl bg-slate-900 p-4">
 
                     <p className="text-xs uppercase tracking-widest text-slate-500">
+
                         Project
+
                     </p>
 
                     <h3 className="mt-2 font-semibold">
+
                         NEXUS AI
+
                     </h3>
 
                     <p className="mt-1 text-sm text-slate-400">
+
                         Hackathon Edition
+
                     </p>
 
                 </div>
@@ -153,5 +188,7 @@ export default function Sidebar() {
             </div>
 
         </aside>
+
     );
+
 }

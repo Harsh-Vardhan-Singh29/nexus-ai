@@ -3,114 +3,148 @@ import {
     FaRobot,
     FaCalendarAlt,
     FaChartLine,
+    FaArrowRight,
 } from "react-icons/fa";
+
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+
+import GlassCard from "../ui/GlassCard";
+import SectionHeader from "../ui/SectionHeader";
 
 export default function QuickActions() {
     const navigate = useNavigate();
 
     const actions = [
         {
-            title: "New Task",
-            subtitle: "Create a task",
-            icon: <FaPlus size={22} />,
-            color: "from-blue-500 to-cyan-500",
+            title: "Create Task",
+            subtitle: "Add a new task to your workspace",
+            icon: <FaPlus size={24} />,
+            color: "from-cyan-500 to-blue-600",
             action: () => navigate("/tasks"),
         },
         {
             title: "AI Assistant",
-            subtitle: "Ask Gemini",
-            icon: <FaRobot size={22} />,
+            subtitle: "Ask NEXUS AI for recommendations",
+            icon: <FaRobot size={24} />,
             color: "from-violet-500 to-purple-600",
             action: () => navigate("/ai"),
         },
         {
-            title: "Planner",
-            subtitle: "Open calendar",
-            icon: <FaCalendarAlt size={22} />,
+            title: "Plan My Day",
+            subtitle: "Generate an AI-powered daily schedule",
+            icon: <FaCalendarAlt size={24} />,
             color: "from-emerald-500 to-green-600",
             action: () => navigate("/planner"),
         },
         {
             title: "Analytics",
-            subtitle: "View dashboard",
-            icon: <FaChartLine size={22} />,
+            subtitle: "View your productivity insights",
+            icon: <FaChartLine size={24} />,
             color: "from-orange-500 to-red-500",
-            action: () => navigate("/"),
+            action: () => navigate("/analytics"),
         },
     ];
 
     return (
-        <div className="rounded-2xl border border-slate-700 bg-slate-900/70 p-6 shadow-lg">
+        <GlassCard className="p-8">
 
-            <div className="mb-6">
+            <SectionHeader
+                title="AI Quick Actions"
+                subtitle="Navigate through your AI workspace"
+                icon={<FaRobot />}
+            />
 
-                <h2 className="text-xl font-bold text-white">
-                    Quick Actions
-                </h2>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
-                <p className="text-sm text-slate-400">
-                    Jump to your most-used features
-                </p>
+                {actions.map((item, index) => (
 
-            </div>
-
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-
-                {actions.map((item) => (
-
-                    <button
+                    <motion.button
                         key={item.title}
                         type="button"
                         onClick={item.action}
+                        initial={{
+                            opacity: 0,
+                            y: 20,
+                        }}
+                        animate={{
+                            opacity: 1,
+                            y: 0,
+                        }}
+                        transition={{
+                            delay: index * 0.08,
+                        }}
+                        whileHover={{
+                            y: -6,
+                            scale: 1.02,
+                        }}
+                        whileTap={{
+                            scale: 0.98,
+                        }}
                         className="
                             group
-                            rounded-2xl
+                            overflow-hidden
+                            rounded-3xl
                             border
-                            border-slate-700
-                            bg-slate-800/60
+                            border-white/10
+                            bg-white/5
                             p-6
                             text-left
                             transition-all
                             duration-300
-                            hover:-translate-y-1
-                            hover:border-blue-500
-                            hover:shadow-lg
-                            hover:shadow-blue-500/10
+                            hover:border-cyan-400/40
+                            hover:bg-white/10
                         "
                     >
 
                         <div
                             className={`
-                                mb-5
+                                mb-6
                                 flex
-                                h-14
-                                w-14
+                                h-16
+                                w-16
                                 items-center
                                 justify-center
-                                rounded-xl
+                                rounded-2xl
                                 bg-gradient-to-br
                                 ${item.color}
                                 text-white
+                                shadow-lg
                             `}
                         >
                             {item.icon}
                         </div>
 
                         <h3 className="text-lg font-semibold text-white">
+
                             {item.title}
+
                         </h3>
 
-                        <p className="mt-2 text-sm text-slate-400">
+                        <p className="mt-3 text-sm leading-6 text-slate-400">
+
                             {item.subtitle}
+
                         </p>
 
-                    </button>
+                        <div className="mt-6 flex items-center text-cyan-400 transition-all group-hover:translate-x-1">
+
+                            <span className="text-sm font-medium">
+
+                                Open
+
+                            </span>
+
+                            <FaArrowRight className="ml-2" />
+
+                        </div>
+
+                    </motion.button>
 
                 ))}
 
             </div>
 
-        </div>
+        </GlassCard>
     );
 }

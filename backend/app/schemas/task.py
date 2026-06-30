@@ -6,6 +6,7 @@ class TaskCreate(BaseModel):
     title: str
     description: str | None = None
     priority: str = "Medium"
+    status: str = "Pending"
     deadline: datetime | None = None
     estimated_time: int | None = None
 
@@ -21,10 +22,17 @@ class TaskUpdate(BaseModel):
 
 class TaskResponse(BaseModel):
     id: int
+
     title: str
     description: str | None
+
     priority: str
     status: str
+
+    deadline: datetime | None = None
+    estimated_time: int | None = None
+
+    created_at: datetime | None = None
 
     class Config:
         from_attributes = True

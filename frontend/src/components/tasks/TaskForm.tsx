@@ -23,28 +23,64 @@ export default function TaskForm({
             description: "",
             priority: "Medium",
             status: "Pending",
+            deadline: "",
+            estimated_time: 60,
         }
     );
 
     const [loading, setLoading] = useState(false);
 
     function updateField(
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+        e: React.ChangeEvent<
+            HTMLInputElement |
+            HTMLTextAreaElement |
+            HTMLSelectElement
+        >
     ) {
+
+        const { name, value } = e.target;
+
         setForm({
+
             ...form,
-            [e.target.name]: e.target.value,
+
+            [name]:
+                name === "estimated_time"
+                    ? Number(value)
+                    : value,
+
         });
+
     }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
+        if (!form.title.trim()) {
+            alert("Task title is required.");
+            return;
+        }
+
+        const estimatedTime = Number(form.estimated_time);
+
+        if (Number.isNaN(estimatedTime) || estimatedTime <= 0) {
+            alert("Estimated time must be greater than zero.");
+            return;
+        }
+
         setLoading(true);
 
         try {
-            await onSubmit(form);
+            await onSubmit({
+                ...form,
+                estimated_time: estimatedTime,
+                deadline: form.deadline
+                    ? new Date(form.deadline).toISOString()
+                    : null,
+            });
+
             onClose();
+
         } finally {
             setLoading(false);
         }
@@ -53,7 +89,7 @@ export default function TaskForm({
     return (
         <form
             onSubmit={handleSubmit}
-            className="space-y-5"
+            className="space-y-6"
         >
 
             <div>
@@ -145,6 +181,63 @@ export default function TaskForm({
 
                 </div>
 
+                <div>
+
+                    <label
+                        htmlFor="deadline"
+                        className="text-white block mb-2"
+                    >
+                        Deadline
+                    </label>
+
+                    <input
+                        id="deadline"
+                        name="deadline"
+                        type="datetime-local"
+                        value={form.deadline ?? ""}
+                        onChange={updateField}
+                        className="
+                            w-full
+                            rounded-lg
+                            border
+                            border-slate-700
+                            bg-slate-800
+                            p-3
+                            text-white
+                        "
+                    />
+
+                </div>
+
+                <div>
+
+                    <label
+                        htmlFor="estimated_time"
+                        className="text-white block mb-2"
+                    >
+                        Estimated Time (minutes)
+                    </label>
+
+                    <input
+                        id="estimated_time"
+                        name="estimated_time"
+                        type="number"
+                        min={5}
+                        step={5}
+                        value={form.estimated_time ?? 60}
+                        onChange={updateField}
+                        className="
+                            w-full
+                            rounded-lg
+                            border
+                            border-slate-700
+                            bg-slate-800
+                            p-3
+                            text-white
+                        "
+                    />
+
+                </div>
             </div>
 
             <div className="flex justify-end gap-3">

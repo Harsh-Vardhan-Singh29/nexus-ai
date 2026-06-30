@@ -7,24 +7,44 @@ import {
     Legend,
 } from "recharts";
 
+import {
+    FaChartPie,
+    FaCheckCircle,
+    FaClock,
+    FaBrain,
+} from "react-icons/fa";
+
 import { useTasks } from "../../hooks/useTasks";
 
+import GlassCard from "../ui/GlassCard";
+import AnimatedCounter from "../ui/AnimatedCounter";
+import SectionHeader from "../ui/SectionHeader";
+
 const COLORS = [
-    "#10b981", // Completed
-    "#f59e0b", // Pending
+    "#10b981",
+    "#f59e0b",
 ];
 
 export default function ProductivityChart() {
+
     const { tasks, loading } = useTasks();
 
     if (loading) {
+
         return (
-            <div className="rounded-2xl border border-slate-700 bg-slate-900/70 p-6 shadow-lg">
-                <div className="h-72 flex items-center justify-center text-slate-400">
-                    Loading chart...
+
+            <GlassCard className="p-8">
+
+                <div className="flex h-72 items-center justify-center text-slate-400">
+
+                    Loading productivity analytics...
+
                 </div>
-            </div>
+
+            </GlassCard>
+
         );
+
     }
 
     const completed = tasks.filter(
@@ -32,6 +52,11 @@ export default function ProductivityChart() {
     ).length;
 
     const pending = tasks.length - completed;
+
+    const productivity =
+        tasks.length === 0
+            ? 0
+            : Math.round((completed / tasks.length) * 100);
 
     const chartData = [
         {
@@ -44,43 +69,44 @@ export default function ProductivityChart() {
         },
     ];
 
-    const productivity =
-        tasks.length === 0
-            ? 0
-            : Math.round((completed / tasks.length) * 100);
-
     return (
-        <div className="rounded-2xl border border-slate-700 bg-slate-900/70 p-6 shadow-lg">
 
-            <div className="flex items-center justify-between mb-6">
+        <GlassCard className="p-8">
 
-                <div>
+            {/* Header */}
 
-                    <h2 className="text-xl font-bold text-white">
-                        Productivity Overview
-                    </h2>
+            <div className="mb-8 flex items-center justify-between">
 
-                    <p className="text-sm text-slate-400">
-                        Completion statistics
-                    </p>
-
-                </div>
+                <SectionHeader
+                    title="Productivity Analytics"
+                    subtitle="AI-generated completion insights"
+                    icon={<FaChartPie />}
+                />
 
                 <div className="text-right">
 
-                    <p className="text-3xl font-bold text-cyan-400">
-                        {productivity}%
-                    </p>
+                    <h2 className="text-5xl font-bold text-cyan-400">
 
-                    <p className="text-xs text-slate-400">
+                        <AnimatedCounter
+                            value={productivity}
+                            suffix="%"
+                        />
+
+                    </h2>
+
+                    <p className="mt-2 text-sm text-slate-400">
+
                         Productivity Score
+
                     </p>
 
                 </div>
 
             </div>
 
-            <div className="h-72">
+            {/* Chart */}
+
+            <div className="h-80">
 
                 <ResponsiveContainer width="100%" height="100%">
 
@@ -90,9 +116,9 @@ export default function ProductivityChart() {
                             data={chartData}
                             dataKey="value"
                             nameKey="name"
-                            outerRadius={90}
-                            innerRadius={55}
-                            paddingAngle={4}
+                            outerRadius={105}
+                            innerRadius={68}
+                            paddingAngle={5}
                         >
 
                             {chartData.map((_, index) => (
@@ -106,9 +132,22 @@ export default function ProductivityChart() {
 
                         </Pie>
 
-                        <Tooltip />
+                        <Tooltip
+                            contentStyle={{
+                                background: "#0f172a",
+                                border: "1px solid #334155",
+                                borderRadius: "12px",
+                                color: "#ffffff",
+                            }}
+                        />
 
-                        <Legend />
+                        <Legend
+                            verticalAlign="bottom"
+                            wrapperStyle={{
+                                color: "#cbd5e1",
+                                paddingTop: 20,
+                            }}
+                        />
 
                     </PieChart>
 
@@ -116,34 +155,92 @@ export default function ProductivityChart() {
 
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-4">
+            {/* Metrics */}
 
-                <div className="rounded-xl bg-slate-800 p-4">
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
 
-                    <p className="text-sm text-slate-400">
-                        Completed
-                    </p>
+                <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-5">
 
-                    <h3 className="mt-2 text-2xl font-bold text-green-400">
-                        {completed}
-                    </h3>
+                    <div className="flex items-center gap-3">
+
+                        <FaCheckCircle className="text-green-400" />
+
+                        <span className="text-sm text-slate-300">
+
+                            Completed Tasks
+
+                        </span>
+
+                    </div>
+
+                    <h2 className="mt-4 text-4xl font-bold text-green-400">
+
+                        <AnimatedCounter
+                            value={completed}
+                        />
+
+                    </h2>
 
                 </div>
 
-                <div className="rounded-xl bg-slate-800 p-4">
+                <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5">
 
-                    <p className="text-sm text-slate-400">
-                        Pending
-                    </p>
+                    <div className="flex items-center gap-3">
 
-                    <h3 className="mt-2 text-2xl font-bold text-yellow-400">
-                        {pending}
-                    </h3>
+                        <FaClock className="text-yellow-400" />
+
+                        <span className="text-sm text-slate-300">
+
+                            Pending Tasks
+
+                        </span>
+
+                    </div>
+
+                    <h2 className="mt-4 text-4xl font-bold text-yellow-400">
+
+                        <AnimatedCounter
+                            value={pending}
+                        />
+
+                    </h2>
 
                 </div>
 
             </div>
 
-        </div>
+            {/* AI Insight */}
+
+            <div className="mt-8 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-6">
+
+                <div className="mb-4 flex items-center gap-3">
+
+                    <FaBrain className="text-cyan-400" />
+
+                    <h3 className="font-semibold text-white">
+
+                        AI Insight
+
+                    </h3>
+
+                </div>
+
+                <p className="leading-7 text-slate-300">
+
+                    {productivity >= 80
+                        ? "Excellent momentum. Your completion rate indicates strong productivity. Continue focusing on high-impact tasks."
+                        : productivity >= 60
+                        ? "You're progressing well. Complete the remaining tasks before taking on new work to maintain your momentum."
+                        : productivity >= 40
+                        ? "Momentum is building. Completing a few pending tasks will noticeably improve your productivity score."
+                        : "Your productivity is currently low. Focus on finishing your highest-priority task to build momentum."}
+
+                </p>
+
+            </div>
+
+        </GlassCard>
+
     );
+
 }
