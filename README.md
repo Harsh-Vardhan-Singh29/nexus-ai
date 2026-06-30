@@ -1,43 +1,72 @@
 # 🚀 NEXUS AI
 
-> Stop Planning. Start Finishing.
-
-An AI-powered productivity companion built for the **Vibe2Ship 2026 Hackathon**.
-
----
+> AI-powered productivity companion with smart planning, analytics, reminders and Google authentication.
 
 ## ✨ Features
 
-- AI Task Parsing
-- Intelligent Task Prioritization
-- AI Scheduling
-- Context-Aware Recommendations
-- Calendar Integration
-- Goal & Habit Tracking
-- Productivity Analytics
-
----
+- 🔐 Google Authentication
+- 🤖 AI Productivity Assistant
+- 📋 Smart Task Management
+- 📅 Calendar View
+- 🧠 AI Planner
+- 📊 Analytics Dashboard
+- 🔔 Smart Reminder System
+- 🌐 Browser Notifications
+- 📥 Notification Center
+- 🔍 Task Search
+- ⚙️ User Settings
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 - React
 - TypeScript
+- Vite
 - Tailwind CSS
-- Framer Motion
 
 ### Backend
 - FastAPI
-- SQLAlchemy
+- Python
 
 ### Database
-- Supabase
+- Supabase (PostgreSQL)
 
 ### AI
 - Google Gemini
 
+## 📦 Installation
+
+### Backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## 📁 Project Structure
+
+```
+backend/
+frontend/
+```
+
+## 🎯 Future Improvements
+
+- Mobile App
+- Global Search
+- Real-time Collaboration
+- Push Notifications
+- Offline Support
+
 ---
 
-## 📄 License
-
-MIT
+Built for the **Vibe2Ship Hackathon 2026**.
