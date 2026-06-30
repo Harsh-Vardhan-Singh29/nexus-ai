@@ -6,7 +6,7 @@ export default function GoogleLoginButton() {
             onSuccess={async (credentialResponse) => {
                 try {
                     const response = await fetch(
-                        "http://127.0.0.1:8000/auth/google",
+                        `${import.meta.env.VITE_API_URL}/auth/google`,
                         {
                             method: "POST",
                             headers: {
