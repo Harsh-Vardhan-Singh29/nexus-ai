@@ -33,6 +33,31 @@
 
 ### AI
 - Google Gemini
+## 📸 Screenshots
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### Tasks
+
+![Tasks](screenshots/tasks.png)
+
+### Planner
+
+![Planner](screenshots/planner.png)
+
+### Analytics
+
+![Analytics](screenshots/analytics.png)
+
+### Calendar
+
+![Calendar](screenshots/calendar.png)
+
+### Notifications
+
+![Notifications](screenshots/Settings.png)
 
 ## 📦 Installation
 
