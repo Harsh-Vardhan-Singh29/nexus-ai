@@ -1,6 +1,23 @@
 # 🚀 NEXUS AI
 
 > AI-powered productivity companion with smart planning, analytics, reminders and Google authentication.
+# 🌐 Live Demo
+
+> **Frontend**
+>
+> https://nexus-ai-eight-flame.vercel.app
+
+> **Backend API**
+>
+> https://nexus-ai-backend-u9qg.onrender.com/docs
+
+---
+
+## Demo Credentials
+
+Sign in using Google Authentication.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge)](https://nexus-ai-eight-flame.vercel.app)
+[![Backend API](https://img.shields.io/badge/API-Render-blue?style=for-the-badge)](https://nexus-ai-backend-u9qg.onrender.com/docs)
 
 ## ✨ Features
 
