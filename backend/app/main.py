@@ -14,6 +14,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
+        "https://nexus-ai-hj9w.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
