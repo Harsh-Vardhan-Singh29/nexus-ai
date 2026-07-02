@@ -4,6 +4,8 @@ export default function GoogleLoginButton() {
     return (
         <GoogleLogin
             onSuccess={async (credentialResponse) => {
+                console.log("Google Success", credentialResponse);
+
                 try {
                     console.log("API URL:", import.meta.env.VITE_API_URL);
                     const response = await fetch(
@@ -18,12 +20,18 @@ export default function GoogleLoginButton() {
                             }),
                         }
                     );
+                    console.log("Status:", response.status);
+
 
                     const data = await response.json();
+                    console.log("Backend response:", data);
+
                     localStorage.setItem(
                         "user",
                         JSON.stringify(data.user)
                     );
+                    console.log("Redirecting...");
+
 
                     window.location.href = "/";
 
