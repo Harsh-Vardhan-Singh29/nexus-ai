@@ -15,6 +15,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://nexus-ai-hj9w.vercel.app",
+        "https://nexus-ai-eight-flame.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
